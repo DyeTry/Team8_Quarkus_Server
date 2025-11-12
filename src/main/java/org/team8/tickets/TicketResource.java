@@ -54,7 +54,6 @@ public class TicketResource {
         return ticketService.getAllTickets();
     }
 
-
     @POST
     @Transactional
     public Response create(Ticket incoming, @Context UriInfo uri) {
