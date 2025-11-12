@@ -34,14 +34,14 @@ public class TicketResource {
 
     @GET
     @Path("/secured")
-    @RolesAllowed({"db_admin","db_manager","it_tech"})
+    @RolesAllowed({"ADMIN","MANAGER","TECH"})
     public List<Ticket> listAll() {
         String currentUser = jwt.getName(); // get username from token
         return Ticket.listAll();
     }
 
     @GET
-    @RolesAllowed({"db_admin","db_manager","it_tech"})
+    @RolesAllowed({"ADMIN","MANAGER","TECH"})
     @Path("/public")
     public List<Ticket> list() {
         return Ticket.listAll();
@@ -49,7 +49,7 @@ public class TicketResource {
 
     // GET all tickets
     @GET
-    @RolesAllowed({"db_admin","db_manager","it_tech"})
+    @RolesAllowed({"ADMIN","MANAGER","TECH"})
     public List<Ticket> listAllTickets() {
         return ticketService.getAllTickets();
     }
