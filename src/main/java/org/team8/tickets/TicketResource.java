@@ -118,4 +118,15 @@ public class TicketResource {
         UriBuilder builder = uriInfo.getAbsolutePathBuilder().path(incoming.id.toString());
         return Response.created(builder.build()).entity(incoming).build();
     }
+
+    @PUT
+    @Path("/{id}/approve")
+    @RolesAllowed({"MANAGER","ADMIN"})
+    @Transactional
+    public Response approve(@PathParam("id") Long id) {
+        Ticket t = Ticket.findById(id);
+        if (t == null) return Response.status(Response.Status.NOT_FOUND).build();
+        if (!"APPROVED".equalsIgnoreCase(t.status)) t.status = "APPROVED";
+        return Response.ok(t).build();  // <-- returns updated ticket
+    }
 }
