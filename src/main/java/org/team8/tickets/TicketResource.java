@@ -24,6 +24,9 @@ public class TicketResource {
     @Inject
     JsonWebToken jwt;
 
+    // -------------------------------------------------------------------------
+    // LIST ALL TICKETS
+    // -------------------------------------------------------------------------
     @GET
     @RolesAllowed({ "ADMIN", "MANAGER", "TECH" })
     public List<Ticket> listAll() {
@@ -57,6 +60,27 @@ public class TicketResource {
         UriBuilder builder = uriInfo.getAbsolutePathBuilder().path(created.id.toString());
         return Response.created(builder.build()).entity(created).build();
     }
+
+    // NEW: Create Retirement Ticket
+    @POST
+    @Path("/retirement")
+    @Transactional
+    public Response createRetirement(@Valid Ticket incoming, @Context UriInfo uri) {
+        incoming.id = null;
+        if (incoming.ticketCode == null)
+            incoming.ticketCode = "RET-" + UUID.randomUUID().toString().substring(0,8).toUpperCase();
+        if (incoming.status == null)
+            incoming.status = "retired";
+        if (incoming.dateSubmitted == null)
+            incoming.dateSubmitted = OffsetDateTime.now();
+
+        incoming.persist();
+
+        return Response.created(uri.getAbsolutePathBuilder().path(incoming.id.toString()).build())
+                .entity(incoming)
+                .build();
+    }
+
 
     // -------------------------------------------------------------------------
     // NEW: batch onboarding tickets (multiple equipments)
