@@ -13,19 +13,25 @@ public class AuthResource {
     @Inject
     AuthService authService;
 
+
     @POST
     @Path("/login")
-    public Response login(LoginRequest request) {
-        String token = authService.authenticate(request.username, request.password);
-        if (token == null) {
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"Invalid username or password\"}")
-                    .build();
+    public LoginResponse login(LoginRequest req) {
+        // 1) Find user from DB
+        AppUser user = AppUser.find("username", req.getUsername()).firstResult();
+        if (user == null) {
+            throw new WebApplicationException("Invalid username or password", 401);
         }
 
-        LoginResponse resp = new LoginResponse();
-        resp.token = token;
-        resp.role = "USER";
-        return Response.ok(resp).build();
+        // 2) Authenticate and build JWT (includes groups)
+        String token = authService.authenticate(req.getUsername(), req.getPassword());
+        if (token == null) {
+            throw new WebApplicationException("Invalid username or password", 401);
+        }
+
+        // 3) Return *DB role*, NOT hard-coded USER
+        String role = user.getRole();  // should be ADMIN / MANAGER / TECH / USER
+        System.out.println("[AuthResource] login user=" + user.getUsername() + " role=" + role);
+        return new LoginResponse(token, role);
     }
 }

@@ -19,4 +19,20 @@ public class AppUser extends PanacheEntityBase {
 
     @Column(nullable = false)
     public String role;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public String getRole() {
+        return role;
+    }
 }
