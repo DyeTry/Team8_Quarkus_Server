@@ -24,9 +24,6 @@ public class TicketResource {
     @Inject
     JsonWebToken jwt;
 
-    // -------------------------------------------------------------------------
-    // LIST ALL TICKETS
-    // -------------------------------------------------------------------------
     @GET
     @RolesAllowed({ "ADMIN", "MANAGER", "TECH" })
     public List<Ticket> listAll() {
